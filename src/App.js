@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Admin, Resource } from "react-admin";
+import fakeDataProvider from "ra-data-fakerest";
+import jsonServerProvider from "ra-data-json-server";
+import { RangeList, RangeCreate, RangeEdit } from "./ranges";
+import { Data4Test } from "./data/Data4Test";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+// const dataProvider = jsonServerProvider(
+//   "https://my-json-server.typicode.com/msand/demo"
+// );
+const dataProvider = fakeDataProvider(Data4Test, true);
+
+const App = () => (
+  <Admin dataProvider={dataProvider}>
+    <Resource
+      name="nodes"
+      list={RangeList}
+      create={RangeCreate}
+      edit={RangeEdit}
+    />
+  </Admin>
+);
 
 export default App;
