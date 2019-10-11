@@ -1,14 +1,16 @@
 import React from "react";
 import {
   List,
+  Show,
+  Create,
+  Edit,
   Datagrid,
   DateField,
   TextField,
   BooleanField,
   FunctionField,
-  Create,
-  Edit,
-  SimpleForm
+  SimpleForm,
+  SimpleShowLayout
 } from "react-admin";
 import DateRangeInput, {
   getDateDiff
@@ -62,6 +64,24 @@ export const RangeList = props => (
   </List>
 );
 
+export const RangeShow = props => (
+  <Show title={<RangeTitle />} {...props}>
+    <SimpleShowLayout>
+      <TextField source="id" />
+      <DateRangeField
+        source="timePeriod"
+        strStart="Starting"
+        strEnd="Until"
+        strInc="Inclusive"
+        strDays="Nro. Days"
+        emptyVal="(empty)"
+        isLiteralInfo="true"
+        showDaysDiff="true"
+      />
+    </SimpleShowLayout>
+  </Show>
+);
+
 const recordDefault = {
   timePeriod: {
     start: {
@@ -75,14 +95,6 @@ const recordDefault = {
   }
 };
 
-export const RangeCreate = props => (
-  <Create {...props} record={recordDefault}>
-    <SimpleForm redirect="list">
-      <DateRangeInput strLabel="New range" />
-    </SimpleForm>
-  </Create>
-);
-
 const RangeTitle = ({ record }) => {
   return (
     <span>
@@ -90,6 +102,14 @@ const RangeTitle = ({ record }) => {
     </span>
   );
 };
+
+export const RangeCreate = props => (
+  <Create title={<RangeTitle />} {...props} record={recordDefault}>
+    <SimpleForm redirect="list">
+      <DateRangeInput strLabel="New range" />
+    </SimpleForm>
+  </Create>
+);
 
 export const RangeEdit = props => (
   <Edit title={<RangeTitle />} {...props}>

@@ -2,7 +2,7 @@ import React from "react";
 import { Admin, Resource } from "react-admin";
 import fakeDataProvider from "ra-data-fakerest";
 import jsonServerProvider from "ra-data-json-server";
-import { RangeList, RangeCreate, RangeEdit } from "./ranges";
+import { RangeList, RangeCreate, RangeEdit, RangeShow } from "./ranges";
 import { Data4Test } from "./data/Data4Test";
 
 // const dataProvider = jsonServerProvider(
@@ -15,6 +15,7 @@ const App = () => (
     <Resource
       name="nodes"
       list={RangeList}
+      show={RangeShow}
       create={RangeCreate}
       edit={RangeEdit}
     />
