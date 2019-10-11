@@ -6,19 +6,31 @@ export const isString = s => typeof s === "string" || s instanceof String;
 export default class DateRangeField extends Component {
   constructor(props) {
     super(props);
-    this.setDefaults("startName", "Starting");
-    this.setDefaults("endName", "Ending");
-    this.setDefaults("incName", "inclusive");
-    this.setDefaults("strEmpty", "(empty)");
-    this.setDefaults("strDiff", "Total days: ");
-    this.setDefaults("dateFormat", "DD/MM/YYYY");
-    this.setDefaults("isLiteralInfo", "");
-    this.setDefaults("showDaysDiff", "");
+
+    for (let [key, value] of Object.entries(this.defaultParams())) {
+      this.setDefaults(key, value);
+    }
   }
+
+  defaultParams = () => ({
+    startName: "Starting",
+    endName: "Ending",
+    incName: "inclusive",
+    strEmpty: "(empty)",
+    strDiff: "Total days: ",
+    dateFormat: "DD/MM/YYYY",
+    isLiteralInfo: true,
+    showDaysDiff: true,
+    hideInclusiveFields: false
+  });
 
   // @TODO: improove parameters as '0', '', 'false' passed
   setDefaults = (name, valDefault) => {
-    this[name] = (this.props[name] && isString(this.props[name])) || valDefault;
+    this[name] =
+      this.props[name] && isString(this.props[name])
+        ? this.props[name]
+        : valDefault;
+    // console.log(name, this[name]);
   };
 
   isValidRange = obj => {
@@ -30,6 +42,7 @@ export default class DateRangeField extends Component {
   };
 
   translateInclusive = str => {
+    if (this.hideInclusiveFields) return "";
     let strRet = "(";
     strRet += this.props.record.timePeriod[str].inclusive ? "not " : "";
     strRet += this.incName + ")";

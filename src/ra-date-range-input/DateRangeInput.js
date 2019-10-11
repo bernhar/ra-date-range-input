@@ -14,25 +14,46 @@ export const getDateDiff = obj => {
 class DateRangeInput extends Component {
   constructor(props) {
     super(props);
-    this.setDefaults("startName", "Start");
-    this.setDefaults("startDateId", "startDateId");
-    this.setDefaults("endName", "End");
-    this.setDefaults("endDateId", "endDateId");
-    this.setDefaults("incName", "Inclusive");
-    this.setDefaults("startDatePlaceholderText", `${this["startName"]} date`);
-    this.setDefaults("endDatePlaceholderText", `${this["endName"]} date`);
-    this.setDefaults("dateFormat", "MM/DD/YYYY");
+
+    for (let [key, value] of Object.entries(this.defaultParams())) {
+      this.setDefaults(key, value);
+    }
   }
+
+  defaultParams = () => ({
+    startName: "Start",
+    startDateId: "startDateId",
+    endName: "End",
+    endDateId: "endDateId",
+    incName: "Inclusive",
+    startDatePlaceholderText: `${this["startName"]} date`,
+    endDatePlaceholderText: `${this["endName"]} date`,
+    dateFormat: "MM/DD/YYYY",
+    hideInclusiveFields: false,
+    strLabel: "Range"
+  });
+
   setDefaults = (name, valDefault) => {
-    this[name] = (this.props[name] && isString(this.props[name])) || valDefault;
+    this[name] =
+      this.props[name] && isString(this.props[name])
+        ? this.props[name]
+        : valDefault;
+    console.log(name + " conf", this.props[name]);
+    console.log(name, this[name]);
   };
+
   setNewDateValues = (v, idx) => {
     this.props.record.timePeriod[idx].value = !v
       ? null
       : moment(v).format(this.dateFormat);
   };
   setExportDateValues = idx => {
-    return !this.props.record.timePeriod[idx].value
+    return !(
+      this.props.record &&
+      this.props.record.timePeriod &&
+      this.props.record.timePeriod[idx] &&
+      this.props.record.timePeriod[idx].value
+    )
       ? null
       : moment(this.props.record.timePeriod[idx].value);
   };
@@ -40,21 +61,31 @@ class DateRangeInput extends Component {
     this.setNewDateValues(param.a, "start");
     this.setNewDateValues(param.b, "end");
   };
+
+  getBoolFieldsOrNot = () => {
+    if (!this.hideInclusiveFields) {
+      return (
+        <span>
+          <BooleanInput
+            label={`${this.startName} ${this.incName}?`}
+            source="timePeriod.start.inclusive"
+          />
+          <BooleanInput
+            label={`${this.endName} ${this.incName}?`}
+            source="timePeriod.end.inclusive"
+          />
+        </span>
+      );
+    }
+  };
+
   render() {
     return (
       <Fragment>
         {/* style needed for the calendar height */}
         <div style={{ marginBottom: 350 }}>
-          <span>
-            <BooleanInput
-              label={`${this.startName} ${this.incName}?`}
-              source="timePeriod.start.inclusive"
-            />
-            <BooleanInput
-              label={`${this.endName} ${this.incName}?`}
-              source="timePeriod.end.inclusive"
-            />
-          </span>
+          <h3>{this.strLabel}</h3>
+          {this.getBoolFieldsOrNot()}
           <DateRangeSelector
             startDate={this.setExportDateValues("start")}
             endDate={this.setExportDateValues("end")}
