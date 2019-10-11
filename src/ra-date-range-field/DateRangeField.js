@@ -24,7 +24,6 @@ export default class DateRangeField extends Component {
     hideInclusiveFields: false
   });
 
-  // @TODO: improove parameters as '0', '', 'false' passed
   setDefaults = (name, valDefault) => {
     this[name] =
       this.props[name] && isString(this.props[name])
