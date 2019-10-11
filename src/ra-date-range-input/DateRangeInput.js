@@ -13,20 +13,11 @@ export const getDateDiff = obj => {
 
 class DateRangeInput extends Component {
   state = {
-    startDate: this.props.startDate,
-    endDate: this.props.endDate,
-    focusedInput: null
+    startDate: this.props.record.timePeriod.start.value,
+    endDate: this.props.record.timePeriod.end.value,
+    focusedInput: null,
+    ...this.props.record
   };
-
-  constructor(props) {
-    super(props);
-
-    for (let [key, value] of Object.entries(this.defaultParams())) {
-      this.setDefaults(key, value);
-    }
-
-    this.styleFix = { marginBottom: 350 };
-  }
 
   defaultParams = () => ({
     startName: "Start",
@@ -37,9 +28,21 @@ class DateRangeInput extends Component {
     startDatePlaceholderText: `${this["startName"]} date`,
     endDatePlaceholderText: `${this["endName"]} date`,
     dateFormat: "MM/DD/YYYY",
-    hideInclusiveFields: false,
+    hideInclusiveFields: true,
     strLabel: "Range"
   });
+
+  styleFix = { marginBottom: 350 };
+
+  constructor(props) {
+    super(props);
+
+    for (let [key, value] of Object.entries(this.defaultParams())) {
+      this.setDefaults(key, value);
+    }
+
+    console.log("INIT state", this.state);
+  }
 
   setDefaults = (name, valDefault) => {
     this[name] =
@@ -48,23 +51,66 @@ class DateRangeInput extends Component {
         : valDefault;
   };
 
-  handleDateChange = ({ startDate, endDate }) => {
-    // @TODO find a better way to notice the update. Only way so far is through the pseudo private property _d
-    this.setNewDateValues(startDate ? moment(startDate._d) : null, "start");
-    this.setNewDateValues(endDate ? moment(endDate._d) : null, "end");
-    this.setState({ startDate, endDate });
+  handleDateChange = e => {
+    console.log(e);
+    const tmpState = this.state.timePeriod;
+    if (e.target && e.target.type === "checkbox") {
+      const { checked, name } = e.target;
+      if (name === "timePeriod.end.inclusive") {
+        tmpState.end.inclusive = !!checked;
+      } else {
+        tmpState.start.inclusive = !!checked;
+      }
+      this.setState(
+        { timePeriod: tmpState } //, a => console.log("afterUpdate CKB - Donde!", this.state)
+      );
+    } else {
+      // @TODO find a better way to notice the update. Only way so far is through the pseudo private property _d
+      tmpState.start.value = e.startDate
+        ? moment(e.startDate._d).format("YYYY-MM-DD")
+        : null;
+      tmpState.end.value = e.endDate
+        ? moment(e.endDate._d).format("YYYY-MM-DD")
+        : null;
+      this.setState(
+        {
+          startDate: moment(tmpState.start.value),
+          endDate: moment(tmpState.end.value),
+          timePeriod: tmpState
+        } //, a => console.log("afterUpdate DATES", this.state)
+      );
+    }
   };
 
-  handleFocusChange = focusedInput => this.setState({ focusedInput });
+  handleFocusChange = focusedInput => {
+    console.log("focusedInput", focusedInput);
+    this.setState(
+      { focusedInput } // , a => console.log("afterUpdate focusedInput", this.state)
+    );
+  };
 
   isOutsideRange = () => false;
 
-  setNewDateValues = (v, idx) => {
-    this.props.record.timePeriod[idx].value = !v
-      ? null
-      : moment(v).format(this.dateFormat);
+  getBoolFieldsOrNot = () => {
+    if (!this.hideInclusiveFields) {
+      return (
+        <span>
+          <BooleanInput
+            label={`${this.startName} ${this.incName}?`}
+            source="timePeriod.start.inclusive"
+            onChange={this.handleDateChange}
+            name="start_inclusive"
+          />
+          <BooleanInput
+            label={`${this.endName} ${this.incName}?`}
+            source="timePeriod.end.inclusive"
+            onChange={this.handleDateChange}
+            name="end_inclusive"
+          />
+        </span>
+      );
+    }
   };
-
   setExportDateValues = idx => {
     return !(
       this.props.record &&
@@ -75,31 +121,16 @@ class DateRangeInput extends Component {
       ? null
       : moment(this.props.record.timePeriod[idx].value);
   };
-
-  handleChanges = param => {
-    this.setNewDateValues(param.a, "start");
-    this.setNewDateValues(param.b, "end");
-  };
-
-  getBoolFieldsOrNot = () => {
-    if (!this.hideInclusiveFields) {
-      return (
-        <span>
-          <BooleanInput
-            label={`${this.startName} ${this.incName}?`}
-            source="timePeriod.start.inclusive"
-          />
-          <BooleanInput
-            label={`${this.endName} ${this.incName}?`}
-            source="timePeriod.end.inclusive"
-          />
-        </span>
-      );
-    }
-  };
-
-  // startDatePlaceholderText={this.startDatePlaceholderText}
-  // endDatePlaceholderText={this.endDatePlaceholderText}
+  compileParamsForCalendarComponent = () => ({
+    startDate: this.setExportDateValues("start"),
+    endDate: this.setExportDateValues("end"),
+    startDateId: this.startDateId,
+    endDateId: this.endDateId,
+    focusedInput: this.state.focusedInput,
+    isOutsideRange: this.isOutsideRange,
+    onDatesChange: this.handleDateChange,
+    onFocusChange: this.handleFocusChange
+  });
 
   render() {
     return (
@@ -108,16 +139,7 @@ class DateRangeInput extends Component {
         <div style={this.styleFix}>
           <h3>{this.strLabel}</h3>
           {this.getBoolFieldsOrNot()}
-          <DateRangePicker
-            endDate={this.setExportDateValues("end")}
-            endDateId={this.endDateId}
-            focusedInput={this.state.focusedInput}
-            isOutsideRange={this.isOutsideRange}
-            onDatesChange={this.handleDateChange}
-            onFocusChange={this.handleFocusChange}
-            startDate={this.setExportDateValues("start")}
-            startDateId={this.startDateId}
-          />
+          <DateRangePicker {...this.compileParamsForCalendarComponent()} />
         </div>
       </Fragment>
     );

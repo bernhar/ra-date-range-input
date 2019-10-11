@@ -29,7 +29,6 @@ export default class DateRangeField extends Component {
       this.props[name] && isString(this.props[name])
         ? this.props[name]
         : valDefault;
-    // console.log(name, this[name]);
   };
 
   isValidRange = obj => {

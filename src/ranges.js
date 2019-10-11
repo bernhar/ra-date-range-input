@@ -17,25 +17,42 @@ import DateRangeInput, {
 } from "./ra-date-range-input/DateRangeInput";
 import DateRangeField from "./ra-date-range-field/DateRangeField";
 
+/**
+ * Standard record for creation of new dange dates. Mustn't have the ID key.
+ */
+const recordDefault = {
+  timePeriod: {
+    start: {
+      value: null,
+      inclusive: true
+    },
+    end: {
+      value: null,
+      inclusive: false
+    }
+  }
+};
+
+const objConfigDateRange = {
+  source: "timePeriod",
+  strStart: "Starting",
+  strEnd: "Until",
+  strInc: "Inclusive",
+  strDays: "Nro. Days",
+  emptyVal: "(empty)",
+  isLiteralInfo: true,
+  showDaysDiff: true
+};
+
 export const RangeList = props => (
   <List {...props} title="Date Ranges">
     <Datagrid rowClick="edit">
       <TextField source="id" />
-      <DateRangeField
-        source="timePeriod"
-        strStart="Starting"
-        strEnd="Until"
-        strInc="Inclusive"
-        strDays="Nro. Days"
-        emptyVal="(empty)"
-        isLiteralInfo="true"
-        showDaysDiff="true"
-      />
+      <DateRangeField {...objConfigDateRange} />
       <DateField
         source="timePeriod.start.value"
         label="Starting on"
         textAlign="right"
-        locales="fr-FR"
       />
       <BooleanField
         source="timePeriod.start.inclusive"
@@ -47,7 +64,6 @@ export const RangeList = props => (
         source="timePeriod.end.value"
         label="Ending on"
         textAlign="right"
-        locales="fr-FR"
       />
       <BooleanField
         source="timePeriod.end.inclusive"
@@ -81,19 +97,6 @@ export const RangeShow = props => (
     </SimpleShowLayout>
   </Show>
 );
-
-const recordDefault = {
-  timePeriod: {
-    start: {
-      value: null,
-      inclusive: true
-    },
-    end: {
-      value: null,
-      inclusive: false
-    }
-  }
-};
 
 const RangeTitle = ({ record }) => {
   return (
