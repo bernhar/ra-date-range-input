@@ -78,9 +78,13 @@ export default class DateRangeField extends Component {
         strResult += " " + this.translateDaysDiff(dtStart, dtEnd);
       }
     } else if (dtStart) {
-      strResult += ` ${dtStart.format(this.dateFormat)} ${strIncStart}.`;
+      strResult += `${this.startName} ${dtStart.format(
+        this.dateFormat
+      )} ${strIncStart}.`;
     } else if (dtEnd) {
-      strResult += ` ${dtEnd.format(this.dateFormat)} ${strIncEnd}.`;
+      strResult += `${this.endName} ${dtEnd.format(
+        this.dateFormat
+      )} ${strIncEnd}.`;
     }
     return strResult;
   };
@@ -100,9 +104,13 @@ export default class DateRangeField extends Component {
         strResult += " " + this.translateDaysDiff(dtStart, dtEnd);
       }
     } else if (dtStart) {
-      strResult += ` ${dtStart.format(this.dateFormat)} ${strIncStart}.`;
+      strResult += `${dtStart.format(this.dateFormat)} ${strIncStart} --> ${
+        this.strEmpty
+      }.`;
     } else if (dtEnd) {
-      strResult += ` ${dtEnd.format(this.dateFormat)} ${strIncEnd}.`;
+      strResult += `${this.strEmpty} --> ${dtEnd.format(
+        this.dateFormat
+      )} ${strIncEnd}.`;
     }
     return strResult;
   };

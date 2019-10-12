@@ -19,11 +19,6 @@ class DateRangeInput extends Component {
     ...this.props.record
   };
 
-  incState = {
-    start: this.props.record.timePeriod.start.inclusive,
-    end: this.props.record.timePeriod.end.inclusive
-  };
-
   defaultParams = () => ({
     startName: "Start",
     startDateId: "startDateId",
@@ -46,7 +41,7 @@ class DateRangeInput extends Component {
       this.setDefaults(key, value);
     }
 
-    console.log("INIT state", this.state);
+    // console.log("INIT state", this.state);
   }
 
   setDefaults = (name, valDefault) => {
@@ -57,7 +52,7 @@ class DateRangeInput extends Component {
   };
 
   handleChanges = e => {
-    console.log(e);
+    // console.log(e);
     const tmpState = this.state.timePeriod;
     if (e.target && e.target.type === "checkbox") {
       const { checked, name } = e.target;
@@ -88,7 +83,7 @@ class DateRangeInput extends Component {
   };
 
   handleFocusChange = focusedInput => {
-    console.log("focusedInput", focusedInput);
+    // console.log("focusedInput", focusedInput);
     this.setState(
       { focusedInput } // , a => console.log("afterUpdate focusedInput", this.state)
     );
@@ -104,13 +99,13 @@ class DateRangeInput extends Component {
             label={`${this.startName} ${this.incName}?`}
             source="start"
             onChange={this.handleChanges}
-            defaultValue={this.incState.start}
+            defaultValue={this.props.record.timePeriod.start.inclusive}
           />
           <BooleanInput
             label={`${this.endName} ${this.incName}?`}
             source="end"
             onChange={this.handleChanges}
-            defaultValue={this.incState.end}
+            defaultValue={this.props.record.timePeriod.end.inclusive}
           />
         </span>
       );
