@@ -21,15 +21,26 @@ class DateRangeInput extends Component {
 
   defaultParams = () => ({
     startName: "Start",
-    startDateId: "startDateId",
     endName: "End",
-    endDateId: "endDateId",
     incName: "Inclusive",
-    startDatePlaceholderText: `${this["startName"]} date`,
-    endDatePlaceholderText: `${this["endName"]} date`,
+    startDateId: "startDateId",
+    endDateId: "endDateId",
     dateFormat: "MM/DD/YYYY",
     hideInclusiveFields: false,
-    strLabel: "Range"
+    strLabel: "Range",
+    objConfigComponent: {}
+  });
+
+  exportConfigComponent = () => ({
+    startDate: this.setExportDateValues("start"),
+    endDate: this.setExportDateValues("end"),
+    startDateId: this.startDateId,
+    endDateId: this.endDateId,
+    focusedInput: this.state.focusedInput,
+    isOutsideRange: this.isOutsideRange,
+    onDatesChange: this.handleChanges,
+    onFocusChange: this.handleFocusChange,
+    ...this.objConfigComponent
   });
 
   styleFix = { marginBottom: 350 };
@@ -121,16 +132,6 @@ class DateRangeInput extends Component {
       ? null
       : moment(this.props.record.timePeriod[idx].value);
   };
-  compileParamsForCalendarComponent = () => ({
-    startDate: this.setExportDateValues("start"),
-    endDate: this.setExportDateValues("end"),
-    startDateId: this.startDateId,
-    endDateId: this.endDateId,
-    focusedInput: this.state.focusedInput,
-    isOutsideRange: this.isOutsideRange,
-    onDatesChange: this.handleChanges,
-    onFocusChange: this.handleFocusChange
-  });
 
   render() {
     return (
@@ -139,7 +140,7 @@ class DateRangeInput extends Component {
         <div style={this.styleFix}>
           <h3>{this.strLabel}</h3>
           {this.getBoolFieldsOrNot()}
-          <DateRangePicker {...this.compileParamsForCalendarComponent()} />
+          <DateRangePicker {...this.exportConfigComponent()} />
         </div>
       </Fragment>
     );

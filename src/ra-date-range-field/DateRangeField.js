@@ -13,12 +13,12 @@ export default class DateRangeField extends Component {
   }
 
   defaultParams = () => ({
+    dateFormat: "DD/MM/YYYY",
     startName: "Starting",
     endName: "Ending",
     incName: "inclusive",
     strEmpty: "(empty)",
     strDiff: "Total days: ",
-    dateFormat: "DD/MM/YYYY",
     isLiteralInfo: true,
     showDaysDiff: true,
     hideInclusiveFields: false
@@ -59,7 +59,7 @@ export default class DateRangeField extends Component {
             "DD"
           )} ${strIncStart} ${this.endName.toLowerCase()} ${dtEnd.format(
             "DD"
-          )} ${strIncEnd} ${dtEnd.format("MMMM/YYYY")}.`;
+          )} ${strIncEnd} ${dtEnd.format(this.dateFormat)}.`;
         } else {
           strResult += ` ${dtStart.format(
             "DD MMMM"
