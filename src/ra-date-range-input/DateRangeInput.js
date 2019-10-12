@@ -19,6 +19,11 @@ class DateRangeInput extends Component {
     ...this.props.record
   };
 
+  incState = {
+    start: this.props.record.timePeriod.start.inclusive,
+    end: this.props.record.timePeriod.end.inclusive
+  };
+
   defaultParams = () => ({
     startName: "Start",
     startDateId: "startDateId",
@@ -28,7 +33,7 @@ class DateRangeInput extends Component {
     startDatePlaceholderText: `${this["startName"]} date`,
     endDatePlaceholderText: `${this["endName"]} date`,
     dateFormat: "MM/DD/YYYY",
-    hideInclusiveFields: true,
+    hideInclusiveFields: false,
     strLabel: "Range"
   });
 
@@ -51,12 +56,12 @@ class DateRangeInput extends Component {
         : valDefault;
   };
 
-  handleDateChange = e => {
+  handleChanges = e => {
     console.log(e);
     const tmpState = this.state.timePeriod;
     if (e.target && e.target.type === "checkbox") {
       const { checked, name } = e.target;
-      if (name === "timePeriod.end.inclusive") {
+      if (name === "end") {
         tmpState.end.inclusive = !!checked;
       } else {
         tmpState.start.inclusive = !!checked;
@@ -97,15 +102,15 @@ class DateRangeInput extends Component {
         <span>
           <BooleanInput
             label={`${this.startName} ${this.incName}?`}
-            source="timePeriod.start.inclusive"
-            onChange={this.handleDateChange}
-            name="start_inclusive"
+            source="start"
+            onChange={this.handleChanges}
+            defaultValue={this.incState.start}
           />
           <BooleanInput
             label={`${this.endName} ${this.incName}?`}
-            source="timePeriod.end.inclusive"
-            onChange={this.handleDateChange}
-            name="end_inclusive"
+            source="end"
+            onChange={this.handleChanges}
+            defaultValue={this.incState.end}
           />
         </span>
       );
@@ -128,7 +133,7 @@ class DateRangeInput extends Component {
     endDateId: this.endDateId,
     focusedInput: this.state.focusedInput,
     isOutsideRange: this.isOutsideRange,
-    onDatesChange: this.handleDateChange,
+    onDatesChange: this.handleChanges,
     onFocusChange: this.handleFocusChange
   });
 
